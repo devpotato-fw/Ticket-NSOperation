@@ -29,14 +29,12 @@
     
     //1.创建NSInvocationOperation对象
     NSInvocationOperation *operation1 = [[NSInvocationOperation alloc] initWithTarget:self
-                                                                            selector:@selector(saleTicket)
-                                                                              object:nil];
-    operation1.name = @"西安售票中心";
+                                                                            selector:@selector(saleTicket:)
+                                                                              object:@"西安售票中心"];
     
     NSInvocationOperation *operation2 = [[NSInvocationOperation alloc] initWithTarget:self
-                                                                             selector:@selector(saleTicket)
-                                                                               object:nil];
-    operation1.name = @"北京售票中心";
+                                                                             selector:@selector(saleTicket:)
+                                                                               object:@"北京售票中心"];
     
     // 用NSInvocationOperation建了一个后台线程,并且放到NSOperationQueue中
     NSOperationQueue *queue = [[NSOperationQueue alloc] init];
@@ -60,10 +58,11 @@
     NSLog(@"%@", [NSThread currentThread]);
 }
 
-- (void)saleTicket {
+- (void)saleTicket:(NSString *)threadName {
     while (1) {
         // 添加同步锁
         @synchronized(self) {
+            [NSThread currentThread].name = threadName;
             //如果还有票，继续售卖
             if (_ticketCount > 0) {
                 _ticketCount --;
